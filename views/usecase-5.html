@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.3/united/bootstrap.min.css" />
+    <script
+      src="https://code.jquery.com/jquery-2.2.4.min.js"
+      integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="css/main.css" />
+    <title>Shopee Test | Home</title>
+  </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="#">Shopee Test</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarColor01"
+          aria-controls="navbarColor01"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarColor01">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">UseCase 1 </a>
+            </li>
+            <li class="nav-item"><a class="nav-link" href="usecase-2.html">UseCase 2</a></li>            
+            <li class="nav-item"><a class="nav-link" href="usecase-3.html">UseCase 3</a></li>
+            <li class="nav-item"><a class="nav-link" href="usecase-4.html">UseCase 4 </a></li>
+            <li class="nav-item active"><a class="nav-link" href="#">UseCase 5 <span class="sr-only">(current)</span></a></li>  
+          </ul>
+        </div>
+      </nav>
+    </header>
+    <main class="container">
+      <h3>Use case 5 - Remove Exchange Rate</h3>
+
+      <table class="table" style="margin-top: 15px;">
+            <thead></thead>
+            <tbody></tbody>
+          </table>        
+      </div>      
+
+    </main>
+    <script>
+      const table = document.querySelector('.table');   
+      const tHead = document.querySelector('thead');   
+      const tBody = document.querySelector('tbody');
+
+      window.onload = function(){
+        getData();
+      }
+      function getData(){
+        $.get("http://localhost:3000/api/users//all/exchange-rate")
+          .then(res => {
+            let data = res.data;
+            console.log(data);
+            renderTable(data);
+          })
+          .fail(err => {
+            alert(err.responseJSON.message);
+          });  
+      }
+      function renderTable(data){
+        console.log('panjang ', data);
+        tHead.innerHTML = getTableHead(data);
+        let templateString = '';
+        data.forEach(entry=>{
+          templateString += getTableBodyRow(entry)
+        })
+        tBody.innerHTML = templateString;
+      }
+      function getTableHead(data){
+        return `<tr>
+            <th scope="col">From</th>
+            <th scope="col">To</th>
+            <th scope="col">Delete</th>
+        </tr>`;
+      }
+      function getTableBodyRow(data){
+        return `<tr>
+          <td>${data.currency_from}</td>
+          <td>${data.currency_to}</td>
+          <td><button class="btn btn-outline-info" data-id="${data.id}"> Delete </button></td>          
+        </tr>`;
+      }
+      function deleteEntry(element){
+        let id = element.dataset.id;
+        let url = "http://localhost:3000/api/users/rm-exchange-rate/"+id;
+        $.ajax({
+            url: url,
+            type: 'DELETE',
+            success: function(res){
+              if(res.status){
+                getData();
+              }
+              alert(res.message);
+              console.log(res);
+            },
+            error: function(err){
+              console.log(err);
+              alert(err.responseJSON.message);
+            }
+        });              
+        
+      }
+      // event listener
+      document.addEventListener('click', event =>{
+        let element = event.target;
+        if(element.matches('.btn')){
+          deleteEntry(element);
+        }
+      });
+    </script>
+  </body>
+</html>
