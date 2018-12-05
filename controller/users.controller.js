@@ -1,5 +1,4 @@
-var express = require("express"),
-  sequelize = require("../dbconnection");
+var sequelize = require("../dbconnection");
 var Op = sequelize.Op;
 
 // take the model
@@ -12,7 +11,7 @@ history.belongsTo(exchange_rate, { foreignKey: "fk_exchange_rate" });
 class Users {
   constructor() {}
 
-  IsDateValid(date) {
+  IsDateValid(date) {// self date string validator
     var check = date.split("-");
     var newDate;
     if(check.length == 3 && check[0].length == 4 && check[1].length == 2 && check[2].length == 2) {
@@ -31,7 +30,6 @@ class Users {
       res.status(500).json({status: false, message: "Somthing wrong when retrieving data", err: err});
     })
   }
-
   // USE CASE INPUT DAILY EXHCHANGE RATE
   inputExchangeRate(req, res) {
     const { date, from, to, rate } = req.body;
