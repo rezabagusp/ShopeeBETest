@@ -8,10 +8,4 @@ RUN npm install
 
 COPY . .
 
-CMD ["cd", "database"]
-
-CMD ["node", "database.js"]
-
-CMD ["node", "exchange_rate.database.js"]
-
 CMD ["npm", "start"]
